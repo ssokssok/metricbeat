@@ -1,0 +1,9 @@
+# Module: wmiasset
+# Docs: https://www.elastic.co/guide/en/beats/metricbeat//metricbeat-module-wmiasset.html
+
+- module: wmiasset
+  metricsets: ["tlabasset"]
+  enabled: false
+  period: 10s
+  hosts: ["localhost"]
+

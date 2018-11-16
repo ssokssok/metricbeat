@@ -1,0 +1,9 @@
+- name: tlabasset
+  type: group
+  description: >
+    tlabasset
+  fields:
+    - name: example
+      type: keyword
+      description: >
+        Example field

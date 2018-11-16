@@ -1,0 +1,5 @@
+metricbeat
+Copyright 2018 siwoo park
+
+This product includes software developed by The Apache Software
+Foundation (http://www.apache.org/).

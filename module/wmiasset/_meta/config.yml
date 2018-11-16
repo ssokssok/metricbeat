@@ -1,0 +1,6 @@
+- module: wmiasset
+  metricsets: ["tlabasset"]
+  enabled: false
+  period: 10s
+  hosts: ["localhost"]
+

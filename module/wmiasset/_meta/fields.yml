@@ -1,0 +1,11 @@
+- key: wmiasset
+  title: "wmiasset"
+  description: >
+    experimental[]
+
+    wmiasset module
+  fields:
+    - name: wmiasset
+      type: group
+      description: >
+      fields:

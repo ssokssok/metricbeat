@@ -1,0 +1,1 @@
+/home/nx/goworkspace/src/github.com/ssokssok/metricbeat/vendor/github.com/elastic/beats/metricbeat/scripts/generate_imports_helper.py
