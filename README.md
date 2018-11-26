@@ -16,7 +16,7 @@ It will ask you for the module and metricset name. Insert the name accordingly.
 To compile your beat run `make`. Then you can run the following command to see the first output:
 
 ```
-metricbeat -e -d "*"
+metricbeat -c metricbeat.yml -e -d "*"
 ```
 
 In case further modules are metricsets should be added, run:
