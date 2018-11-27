@@ -1,0 +1,6 @@
+- module: tlabasset
+  metricsets: ["device"]
+  enabled: false
+  period: 10s
+  hosts: ["localhost"]
+

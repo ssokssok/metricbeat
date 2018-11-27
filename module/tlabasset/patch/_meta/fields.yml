@@ -1,0 +1,9 @@
+- name: patch
+  type: group
+  description: >
+    patch
+  fields:
+    - name: example
+      type: keyword
+      description: >
+        Example field

@@ -47,6 +47,14 @@ metricbeat.max_start_delay: 10s
 #==========================  Modules configuration ============================
 metricbeat.modules:
 
+#------------------------------ tlabasset Module -----------------------------
+- module: tlabasset
+  metricsets: ["device"]
+  enabled: false
+  period: 10s
+  hosts: ["localhost"]
+
+
 #------------------------------ wmiasset Module ------------------------------
 - module: wmiasset
   metricsets: ["tlabasset"]

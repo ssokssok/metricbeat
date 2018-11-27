@@ -1,0 +1,9 @@
+# Module: tlabasset
+# Docs: https://www.elastic.co/guide/en/beats/metricbeat//metricbeat-module-tlabasset.html
+
+- module: tlabasset
+  metricsets: ["device","sw","os"]
+  enabled: true
+  period: 10s
+  hosts: ["localhost"]
+

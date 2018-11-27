@@ -1,0 +1,59 @@
+////
+This file is generated! See scripts/docs_collector.py
+////
+
+[[metricbeat-module-tlabasset]]
+== tlabasset module
+
+experimental[]
+
+This is the tlabasset module.
+
+
+
+[float]
+=== Example configuration
+
+The tlabasset module supports the standard configuration options that are described
+in <<configuration-metricbeat>>. Here is an example configuration:
+
+[source,yaml]
+----
+metricbeat.modules:
+- module: tlabasset
+  metricsets: ["device"]
+  enabled: false
+  period: 10s
+  hosts: ["localhost"]
+
+----
+
+[float]
+=== Metricsets
+
+The following metricsets are available:
+
+* <<metricbeat-metricset-tlabasset-device,device>>
+
+* <<metricbeat-metricset-tlabasset-file,file>>
+
+* <<metricbeat-metricset-tlabasset-os,os>>
+
+* <<metricbeat-metricset-tlabasset-patch,patch>>
+
+* <<metricbeat-metricset-tlabasset-printer,printer>>
+
+* <<metricbeat-metricset-tlabasset-sw,sw>>
+
+include::tlabasset/device.asciidoc[]
+
+include::tlabasset/file.asciidoc[]
+
+include::tlabasset/os.asciidoc[]
+
+include::tlabasset/patch.asciidoc[]
+
+include::tlabasset/printer.asciidoc[]
+
+include::tlabasset/sw.asciidoc[]
+

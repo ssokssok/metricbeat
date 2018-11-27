@@ -5,10 +5,18 @@ This file is generated! See scripts/docs_collector.py
 [options="header"]
 |===================================
 |Modules   |Dashboards   |Metricsets   
+|<<metricbeat-module-tlabasset,tlabasset>>  experimental[]   |image:./images/icon-no.png[No prebuilt dashboards]    |  
+.6+| .6+|  |<<metricbeat-metricset-tlabasset-device,device>> experimental[]  
+|<<metricbeat-metricset-tlabasset-file,file>> experimental[]  
+|<<metricbeat-metricset-tlabasset-os,os>> experimental[]  
+|<<metricbeat-metricset-tlabasset-patch,patch>> experimental[]  
+|<<metricbeat-metricset-tlabasset-printer,printer>> experimental[]  
+|<<metricbeat-metricset-tlabasset-sw,sw>> experimental[]  
 |<<metricbeat-module-wmiasset,wmiasset>>  experimental[]   |image:./images/icon-no.png[No prebuilt dashboards]    |  
 .1+| .1+|  |<<metricbeat-metricset-wmiasset-tlabasset,tlabasset>> experimental[]  
 |================================
 
 --
 
+include::modules/tlabasset.asciidoc[]
 include::modules/wmiasset.asciidoc[]

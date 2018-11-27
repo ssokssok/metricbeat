@@ -1,0 +1,11 @@
+- key: tlabasset
+  title: "tlabasset"
+  description: >
+    experimental[]
+
+    tlabasset module
+  fields:
+    - name: tlabasset
+      type: group
+      description: >
+      fields:

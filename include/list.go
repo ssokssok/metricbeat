@@ -26,6 +26,13 @@ modules.
 package include
 
 import (
+	_ "github.com/ssokssok/metricbeat/module/tlabasset"
+	_ "github.com/ssokssok/metricbeat/module/tlabasset/device"
+	_ "github.com/ssokssok/metricbeat/module/tlabasset/file"
+	_ "github.com/ssokssok/metricbeat/module/tlabasset/os"
+	_ "github.com/ssokssok/metricbeat/module/tlabasset/patch"
+	_ "github.com/ssokssok/metricbeat/module/tlabasset/printer"
+	_ "github.com/ssokssok/metricbeat/module/tlabasset/sw"
 	_ "github.com/ssokssok/metricbeat/module/wmiasset"
 	_ "github.com/ssokssok/metricbeat/module/wmiasset/tlabasset"
 )
