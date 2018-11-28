@@ -21,7 +21,7 @@ func getPrinterAssetType() (string, error) {
 
   m := new(esmodels.PrinterAssetType)
 
-  qry, fn := m.GetPsWmiQuery()
+  qry, fn := m.GetPsQuery()
   
   execcmd := "PowerShell"
   
@@ -59,7 +59,7 @@ func getEsModelPrinterAssetType() ([]*esmodels.PrinterAssetType, error) {
 
   m := new(esmodels.PrinterAssetType)
 
-  qry, fn := m.GetPsWmiQuery()
+  qry, fn := m.GetPsQuery()
   
   execcmd := "PowerShell"
   println("################# :", qry)

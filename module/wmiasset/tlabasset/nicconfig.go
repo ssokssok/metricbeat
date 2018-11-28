@@ -21,7 +21,7 @@ func getNicConfigType() (string, error) {
 
   m := new(esmodels.NwConfigType)
 
-  qry, fn := m.GetPsWmiQuery()
+  qry, fn := m.GetPsQuery()
   
   execcmd := "PowerShell"
   
@@ -59,7 +59,7 @@ func getEsModelNicConfigType() ([]*esmodels.NwConfigType, error) {
 
   m := new(esmodels.NwConfigType)
 
-  qry, fn := m.GetPsWmiQuery()
+  qry, fn := m.GetPsQuery()
   
   execcmd := "PowerShell"
   

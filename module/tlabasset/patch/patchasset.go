@@ -21,7 +21,7 @@ func getPatchAssetType() (string, error) {
 
   m := new(esmodels.PatchType)
 
-  qry, fn := m.GetPsWmiQuery()
+  qry, fn := m.GetPsQuery()
   
   execcmd := "PowerShell"
   
@@ -59,7 +59,7 @@ func getEsModelPatchAssetType() ([]*esmodels.PatchType, error) {
 
   m := new(esmodels.PatchType)
 
-  qry, fn := m.GetPsWmiQuery()
+  qry, fn := m.GetPsQuery()
   
   execcmd := "PowerShell"
   println("################# :", qry)

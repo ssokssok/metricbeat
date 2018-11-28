@@ -21,7 +21,7 @@ func getDiskType() (string, error) {
 
   m := new(esmodels.DiskType)
 
-  qry, fn := m.GetPsWmiQuery()
+  qry, fn := m.GetPsQuery()
   
   execcmd := "PowerShell"
   
@@ -59,7 +59,7 @@ func getEsModelDiskType() ([]*esmodels.DiskType, error) {
 
   m := new(esmodels.DiskType)
 
-  qry, fn := m.GetPsWmiQuery()
+  qry, fn := m.GetPsQuery()
   
   execcmd := "PowerShell"
   

@@ -21,7 +21,7 @@ func getUserAccountType() (string, error) {
 
   m := new(esmodels.UserAccountType)
 
-  qry, fn := m.GetPsWmiQuery()
+  qry, fn := m.GetPsQuery()
   
   execcmd := "PowerShell"
   
@@ -59,7 +59,7 @@ func getEsModelUserAccountType() ([]*esmodels.UserAccountType, error) {
 
   m := new(esmodels.UserAccountType)
 
-  qry, fn := m.GetPsWmiQuery()
+  qry, fn := m.GetPsQuery()
   
   execcmd := "PowerShell"
   

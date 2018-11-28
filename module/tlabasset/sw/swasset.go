@@ -21,7 +21,7 @@ func getSwAssetType() (string, error) {
 
   m := new(esmodels.SwAssetType)
 
-  qry, fn := m.GetPsWmiQuery()
+  qry, fn := m.GetPsQuery()
   
   execcmd := "PowerShell"
   
@@ -59,7 +59,7 @@ func getEsModelSwAssetType() ([]*esmodels.SwAssetType, error) {
 
   m := new(esmodels.SwAssetType)
 
-  qry, fn := m.GetPsWmiQuery()
+  qry, fn := m.GetPsQuery()
   
   execcmd := "PowerShell"
   println("################# :", qry)

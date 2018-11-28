@@ -21,7 +21,7 @@ func getShareType() (string, error) {
 
   m := new(esmodels.ShareType)
 
-  qry, fn := m.GetPsWmiQuery()
+  qry, fn := m.GetPsQuery()
   
   execcmd := "PowerShell"
   
@@ -59,7 +59,7 @@ func getEsModelShareType() ([]*esmodels.ShareType, error) {
 
   m := new(esmodels.ShareType)
 
-  qry, fn := m.GetPsWmiQuery()
+  qry, fn := m.GetPsQuery()
   
   execcmd := "PowerShell"
   println("######### qry: ", qry)

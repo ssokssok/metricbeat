@@ -21,7 +21,7 @@ func getProcessorType() (string, error) {
 
   m := new(esmodels.ProcessorType)
 
-  qry, fn := m.GetPsWmiQuery()
+  qry, fn := m.GetPsQuery()
   
   execcmd := "PowerShell"
   
@@ -59,7 +59,7 @@ func getEsModelProcessorType() ([]*esmodels.ProcessorType, error) {
 
   m := new(esmodels.ProcessorType)
 
-  qry, fn := m.GetPsWmiQuery()
+  qry, fn := m.GetPsQuery()
   
   execcmd := "PowerShell"
   

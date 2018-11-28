@@ -21,7 +21,7 @@ func getPcBiosType() (string, error) {
 
   m := new(esmodels.PcBiosType)
 
-  qry, fn := m.GetPsWmiQuery()
+  qry, fn := m.GetPsQuery()
   
   execcmd := "PowerShell"
   
@@ -51,7 +51,7 @@ func getEsModelPcBiosType() (*esmodels.PcBiosType, error) {
 
   m := new(esmodels.PcBiosType)
 
-  qry, fn := m.GetPsWmiQuery()
+  qry, fn := m.GetPsQuery()
   
   execcmd := "PowerShell"
   

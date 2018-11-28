@@ -21,7 +21,7 @@ func getOsType() (string, error) {
 
   m := new(esmodels.OsType)
 
-  qry, fn := m.GetPsWmiQuery()
+  qry, fn := m.GetPsQuery()
   
   execcmd := "PowerShell"
   
@@ -51,7 +51,7 @@ func getEsModelOsType() (*esmodels.OsType, error) {
 
   m := new(esmodels.OsType)
 
-  qry, fn := m.GetPsWmiQuery()
+  qry, fn := m.GetPsQuery()
   
   execcmd := "PowerShell"
   println("######### qry: ", qry)

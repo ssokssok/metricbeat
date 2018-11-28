@@ -21,7 +21,7 @@ func getSystemType() (string, error) {
 
   m := new(esmodels.SystemType)
 
-  qry, fn := m.GetPsWmiQuery()
+  qry, fn := m.GetPsQuery()
   
   execcmd := "PowerShell"
   
@@ -51,7 +51,7 @@ func getEsModelSystemType() (*esmodels.SystemType, error) {
 
   m := new(esmodels.SystemType)
 
-  qry, fn := m.GetPsWmiQuery()
+  qry, fn := m.GetPsQuery()
   
   execcmd := "PowerShell"
   

@@ -58,7 +58,7 @@ func (m *MetricSet) Fetch(report mb.ReporterV2) {
         "hotfixid": itm.HotFixID,
         "description": itm.Description,
         "caption": itm.Caption,
-        "installon": itm.InstallOn,
+        "installedon": itm.InstalledOn,
       },
     })
   }

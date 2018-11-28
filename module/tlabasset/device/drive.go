@@ -21,7 +21,7 @@ func getDriveType() (string, error) {
 
   m := new(esmodels.DriveType)
 
-  qry, fn := m.GetPsWmiQuery()
+  qry, fn := m.GetPsQuery()
   
   execcmd := "PowerShell"
   
@@ -59,7 +59,7 @@ func getEsModelDriveType() ([]*esmodels.DriveType, error) {
 
   m := new(esmodels.DriveType)
 
-  qry, fn := m.GetPsWmiQuery()
+  qry, fn := m.GetPsQuery()
   
   execcmd := "PowerShell"
   

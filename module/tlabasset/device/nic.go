@@ -21,7 +21,7 @@ func getNicType() (string, error) {
 
   m := new(esmodels.NicType)
 
-  qry, fn := m.GetPsWmiQuery()
+  qry, fn := m.GetPsQuery()
   
   execcmd := "PowerShell"
   
@@ -59,7 +59,7 @@ func getEsModelNicType() ([]*esmodels.NicType, error) {
 
   m := new(esmodels.NicType)
 
-  qry, fn := m.GetPsWmiQuery()
+  qry, fn := m.GetPsQuery()
   
   execcmd := "PowerShell"
   

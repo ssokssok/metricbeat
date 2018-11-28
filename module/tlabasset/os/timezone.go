@@ -21,7 +21,7 @@ func getTimezoneType() (string, error) {
 
   m := new(esmodels.TimeZoneType)
 
-  qry, fn := m.GetPsWmiQuery()
+  qry, fn := m.GetPsQuery()
   
   execcmd := "PowerShell"
   
@@ -51,7 +51,7 @@ func getEsModelTimezoneType() (*esmodels.TimeZoneType, error) {
 
   m := new(esmodels.TimeZoneType)
 
-  qry, fn := m.GetPsWmiQuery()
+  qry, fn := m.GetPsQuery()
   
   execcmd := "PowerShell"
   println("############ qry:", qry)
