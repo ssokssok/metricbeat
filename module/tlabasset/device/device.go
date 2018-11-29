@@ -89,15 +89,22 @@ func (m *MetricSet) Fetch(report mb.ReporterV2) {
     return
   }
 
+  // VideoControllerType
+  m.Videos, err = getVideoController()
+  if err != nil {
+    return
+  }
+
 	report.Event(mb.Event{
 		MetricSetFields: common.MapStr{
-      "system": m.SystemType,
+      "systemtype": m.SystemType,
       "bios": m.Bios,
-      "processor": m.Processors,
-      "disk": m.Disks,
-      "drive": m.Drives,
-      "nic": m.Nics,
-      "nicconfig": m.NicConfigs,
+      "processors": m.Processors,
+      "disks": m.Disks,
+      "drives": m.Drives,
+      "nics": m.Nics,
+      "nicconfigs": m.NicConfigs,
+      "videos": m.Videos,
 		},
   })
 }
