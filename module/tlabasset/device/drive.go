@@ -4,6 +4,7 @@ import (
   "os/exec"
   "encoding/json"
 
+  "github.com/ssokssok/metricbeat/module/tlabasset/utils"
   "bitbucket.org/truslab/pcon/servers/common/esmodels"
 )
 
@@ -31,7 +32,7 @@ func getDriveType() (string, error) {
     return "", err
   }
 
-  buf := getContents(fn) 
+  buf := utils.GetContents(fn) 
 
   ma := make([]*esmodels.DriveType, 0)
 
@@ -70,7 +71,7 @@ func getEsModelDriveType() ([]*esmodels.DriveType, error) {
     return nil, err
   }
 
-  buf := getContents(fn)
+  buf := utils.GetContents(fn)
   
   ma := make([]*esmodels.DriveType, 0)
 

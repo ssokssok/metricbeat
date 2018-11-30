@@ -1,4 +1,4 @@
-package os
+package utils
 
 import (
   "fmt"
@@ -8,7 +8,7 @@ import (
 
 
 
-func getContents(fn string) []byte {
+func GetContents(fn string) []byte {
   path := fmt.Sprintf("%s", fn)
 
   buf, err := ioutil.ReadFile(path)

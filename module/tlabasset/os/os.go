@@ -35,8 +35,6 @@ func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 		return nil, err
 	}
 
-  //osa := new(esmodels.OsAssetType)
-
 	return &MetricSet{
     BaseMetricSet: base,
     OsAssetType: new(esmodels.OsAssetType),

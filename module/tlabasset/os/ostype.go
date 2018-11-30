@@ -4,6 +4,7 @@ import (
   "os/exec"
   "encoding/json"
 
+  "github.com/ssokssok/metricbeat/module/tlabasset/utils"
   "bitbucket.org/truslab/pcon/servers/common/esmodels"
 )
 
@@ -31,7 +32,7 @@ func getOsType() (string, error) {
     return "", err
   }
 
-  buf := getContents(fn) 
+  buf := utils.GetContents(fn) 
 
   err = json.Unmarshal(buf, m)
   if err != nil {
@@ -61,7 +62,7 @@ func getEsModelOsType() (*esmodels.OsType, error) {
     return nil, err
   }
 
-  buf := getContents(fn) 
+  buf := utils.GetContents(fn) 
   println(string(buf))
   
   err = json.Unmarshal(buf, m)

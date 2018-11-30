@@ -4,6 +4,7 @@ import (
   "os/exec"
   "encoding/json"
 
+  "github.com/ssokssok/metricbeat/module/tlabasset/utils"
   "bitbucket.org/truslab/pcon/servers/common/esmodels"
 )
 
@@ -31,7 +32,7 @@ func getVideoControllerType() (string, error) {
     return "", err
   }
 
-  buf := getContents(fn) 
+  buf := utils.GetContents(fn) 
 
   ma := make([]*esmodels.VideoControllerType, 0)
 
@@ -69,7 +70,7 @@ func getEsModelVideoControllerType() ([]*esmodels.VideoControllerType, error) {
     return nil, err
   }
 
-  buf := getContents(fn) 
+  buf := utils.GetContents(fn) 
 
   ma := make([]*esmodels.VideoControllerType, 0)
 

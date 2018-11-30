@@ -4,6 +4,7 @@ import (
   "os/exec"
   "encoding/json"
 
+  "github.com/ssokssok/metricbeat/module/tlabasset/utils"
   "bitbucket.org/truslab/pcon/servers/common/esmodels"
 )
 
@@ -31,7 +32,7 @@ func getPatchAssetType() (string, error) {
     return "", err
   }
 
-  buf := getContents(fn) 
+  buf := utils.GetContents(fn) 
 
   ma := make([]*esmodels.PatchType, 0)
 
@@ -69,7 +70,7 @@ func getEsModelPatchAssetType() ([]*esmodels.PatchType, error) {
     return nil, err
   }
 
-  buf := getContents(fn) 
+  buf := utils.GetContents(fn) 
   println(string(buf))
   ma := make([]*esmodels.PatchType, 0)
 
