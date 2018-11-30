@@ -62,15 +62,6 @@ func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 // of an error set the Error field of mb.Event or simply call report.Error().
 func (m *MetricSet) Fetch(report mb.ReporterV2) {
 
-  // path := `C:\Program Files (x86)\Google\Chrome\Application\chrome.exe`
-
-  // itm := new(esmodels.FileType)
-
-  // err := getVersionInfo(path, itm ) 
-  // if err != nil {
-  //   return
-  // }
-
   list, err  := getFileAssets()
   if err != nil {
     println(err.Error())
