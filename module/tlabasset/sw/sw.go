@@ -67,6 +67,15 @@ func (m *MetricSet) Fetch(report mb.ReporterV2) {
     return
   }
 
+  ulist, uerr := getSwUninstallAssets()
+  if uerr != nil {
+    return
+  }
+
+  for _, itm := range ulist {
+    list = append(list, itm)
+  }
+
   for _, itm := range list {
     report.Event(mb.Event{
       MetricSetFields: common.MapStr{
