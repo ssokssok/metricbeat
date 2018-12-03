@@ -20,7 +20,15 @@ func init() {
 // interface methods except for Fetch.
 type MetricSet struct {
 	mb.BaseMetricSet
-	counter int
+  Names *string   
+  Size *int64   
+  FileDescription *string   
+  OriginalFilename *string  
+  FileVersion *string   
+  ProductName *string   
+  ProductVersion *string 
+  CompanyName *string
+  LegalCopyright *string
 }
 
 // New creates a new instance of the MetricSet. New is responsible for unpacking
@@ -35,7 +43,15 @@ func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 
 	return &MetricSet{
 		BaseMetricSet: base,
-		counter:       1,
+    Names: new(string),
+    Size: new(int64),
+    FileDescription: new(string),
+    OriginalFilename: new(string),
+    FileVersion: new(string),
+    ProductName: new(string),
+    ProductVersion: new(string),
+    CompanyName: new(string),
+    LegalCopyright: new(string),
 	}, nil
 }
 
@@ -43,10 +59,27 @@ func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 // format. It publishes the event which is then forwarded to the output. In case
 // of an error set the Error field of mb.Event or simply call report.Error().
 func (m *MetricSet) Fetch(report mb.ReporterV2) {
-	report.Event(mb.Event{
-		MetricSetFields: common.MapStr{
-			"counter": m.counter,
-		},
-	})
-	m.counter++
+
+  list, err  := getFileAssets()
+  if err != nil {
+    println(err.Error())
+    return
+  }
+
+  for _, itm := range list {
+    report.Event(mb.Event{
+      MetricSetFields: common.MapStr{
+        "name": itm.Name,
+        "size": itm.Size,
+        "file_description": itm.FileDescription,
+        "original_filename": itm.OriginalFilename,
+        "file_version": itm.FileVersion,
+        "product_name": itm.ProductName,
+        "product_version": itm.ProductVersion,
+        "company_name": itm.CompanyName,
+        "legal_copyright": itm.LegalCopyright,
+      },
+    })
+  }
+
 }
