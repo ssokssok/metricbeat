@@ -1,0 +1,19 @@
+{
+    "@timestamp":"2016-05-23T08:05:34.853Z",
+    "beat":{
+        "hostname":"beathost",
+        "name":"beathost"
+    },
+    "metricset":{
+        "host":"localhost",
+        "module":"rsoasset",
+        "name":"file",
+        "rtt":44269
+    },
+    "rsoasset":{
+        "file":{
+            "example": "file"
+        }
+    },
+    "type":"metricsets"
+}

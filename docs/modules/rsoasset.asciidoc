@@ -1,0 +1,59 @@
+////
+This file is generated! See scripts/docs_collector.py
+////
+
+[[metricbeat-module-rsoasset]]
+== rsoasset module
+
+experimental[]
+
+This is the rsoasset module.
+
+
+
+[float]
+=== Example configuration
+
+The rsoasset module supports the standard configuration options that are described
+in <<configuration-metricbeat>>. Here is an example configuration:
+
+[source,yaml]
+----
+metricbeat.modules:
+- module: rsoasset
+  metricsets: ["device"]
+  enabled: false
+  period: 10s
+  hosts: ["localhost"]
+
+----
+
+[float]
+=== Metricsets
+
+The following metricsets are available:
+
+* <<metricbeat-metricset-rsoasset-device,device>>
+
+* <<metricbeat-metricset-rsoasset-file,file>>
+
+* <<metricbeat-metricset-rsoasset-os,os>>
+
+* <<metricbeat-metricset-rsoasset-patch,patch>>
+
+* <<metricbeat-metricset-rsoasset-printer,printer>>
+
+* <<metricbeat-metricset-rsoasset-sw,sw>>
+
+include::rsoasset/device.asciidoc[]
+
+include::rsoasset/file.asciidoc[]
+
+include::rsoasset/os.asciidoc[]
+
+include::rsoasset/patch.asciidoc[]
+
+include::rsoasset/printer.asciidoc[]
+
+include::rsoasset/sw.asciidoc[]
+

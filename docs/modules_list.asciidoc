@@ -5,6 +5,13 @@ This file is generated! See scripts/docs_collector.py
 [options="header"]
 |===================================
 |Modules   |Dashboards   |Metricsets   
+|<<metricbeat-module-rsoasset,rsoasset>>  experimental[]   |image:./images/icon-no.png[No prebuilt dashboards]    |  
+.6+| .6+|  |<<metricbeat-metricset-rsoasset-device,device>> experimental[]  
+|<<metricbeat-metricset-rsoasset-file,file>> experimental[]  
+|<<metricbeat-metricset-rsoasset-os,os>> experimental[]  
+|<<metricbeat-metricset-rsoasset-patch,patch>> experimental[]  
+|<<metricbeat-metricset-rsoasset-printer,printer>> experimental[]  
+|<<metricbeat-metricset-rsoasset-sw,sw>> experimental[]  
 |<<metricbeat-module-tlabasset,tlabasset>>  experimental[]   |image:./images/icon-no.png[No prebuilt dashboards]    |  
 .6+| .6+|  |<<metricbeat-metricset-tlabasset-device,device>> experimental[]  
 |<<metricbeat-metricset-tlabasset-file,file>> experimental[]  
@@ -18,5 +25,6 @@ This file is generated! See scripts/docs_collector.py
 
 --
 
+include::modules/rsoasset.asciidoc[]
 include::modules/tlabasset.asciidoc[]
 include::modules/wmiasset.asciidoc[]

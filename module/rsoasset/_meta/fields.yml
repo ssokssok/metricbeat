@@ -1,0 +1,11 @@
+- key: rsoasset
+  title: "rsoasset"
+  description: >
+    experimental[]
+
+    rsoasset module
+  fields:
+    - name: rsoasset
+      type: group
+      description: >
+      fields:

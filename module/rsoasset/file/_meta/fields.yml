@@ -1,0 +1,9 @@
+- name: file
+  type: group
+  description: >
+    file
+  fields:
+    - name: example
+      type: keyword
+      description: >
+        Example field

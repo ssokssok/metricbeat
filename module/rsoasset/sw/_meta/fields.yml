@@ -1,0 +1,9 @@
+- name: sw
+  type: group
+  description: >
+    sw
+  fields:
+    - name: example
+      type: keyword
+      description: >
+        Example field

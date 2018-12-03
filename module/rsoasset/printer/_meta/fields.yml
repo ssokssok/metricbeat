@@ -1,0 +1,9 @@
+- name: printer
+  type: group
+  description: >
+    printer
+  fields:
+    - name: example
+      type: keyword
+      description: >
+        Example field
