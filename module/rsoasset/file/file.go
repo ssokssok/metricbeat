@@ -20,15 +20,15 @@ func init() {
 // interface methods except for Fetch.
 type MetricSet struct {
 	mb.BaseMetricSet
-  Names *string   
-  Size *int64   
-  FileDescription *string   
-  OriginalFilename *string  
-  FileVersion *string   
-  ProductName *string   
-  ProductVersion *string 
-  CompanyName *string
-  LegalCopyright *string
+  // Names *string   
+  // Size *int64   
+  // FileDescription *string   
+  // OriginalFilename *string  
+  // FileVersion *string   
+  // ProductName *string   
+  // ProductVersion *string 
+  // CompanyName *string
+  // LegalCopyright *string
 }
 
 // New creates a new instance of the MetricSet. New is responsible for unpacking
@@ -36,22 +36,37 @@ type MetricSet struct {
 func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 	cfgwarn.Experimental("The rsoasset file metricset is experimental.")
 
-	config := struct{}{}
+  //config := struct{}{}
+  config := struct{
+    MaxConn    int      `config:"maxconn" validate:"min=1"`
+    RsoSvr     string   `config:"rsosvr"`
+    Hosts      []string `config:"hosts"`
+  }{
+    MaxConn: 10,
+    RsoSvr: "",
+    Hosts: make([]string, 0),
+  }
 	if err := base.Module().UnpackConfig(&config); err != nil {
 		return nil, err
 	}
 
+  println("###################### MaxConn", config.MaxConn, " RsoSvr:", config.RsoSvr)
+  println(" Hosts:", config.Hosts)
+  for _, v := range config.Hosts {
+    println("      - host:", v)
+  }
+
 	return &MetricSet{
 		BaseMetricSet: base,
-    Names: new(string),
-    Size: new(int64),
-    FileDescription: new(string),
-    OriginalFilename: new(string),
-    FileVersion: new(string),
-    ProductName: new(string),
-    ProductVersion: new(string),
-    CompanyName: new(string),
-    LegalCopyright: new(string),
+    // Names: new(string),
+    // Size: new(int64),
+    // FileDescription: new(string),
+    // OriginalFilename: new(string),
+    // FileVersion: new(string),
+    // ProductName: new(string),
+    // ProductVersion: new(string),
+    // CompanyName: new(string),
+    // LegalCopyright: new(string),
 	}, nil
 }
 

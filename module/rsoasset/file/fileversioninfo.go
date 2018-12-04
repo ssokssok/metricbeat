@@ -20,23 +20,24 @@ type VersionInfo struct {
   FileVersion *string `json:"FileVersion,omitempty"`
 }
 
-// TlabFileInfoType is ...
-type TlabFileInfoType struct {
+// RSOFileInfoType is ...
+type RSOFileInfoType struct {
   Name *string `json:"Name,omitempty"`
   FullName *string `json:"FullName,omitempty"`
-  Size  *int64 `json:"Length,omitempty"`
+  Size  *int64 `json:"Size,omitempty"`
   CreationTime *string `json:"CreationTime,omitempty"`
   Version  *VersionInfo `json:"VersionInfo,omitempty"`
 }
 
 func getVersionInfo(path string, ft *esmodels.FileType) error {
 
-  qry := `Powershell /command "Get-ItemProperty -Path '%s' | select-object name, fullname, length, versioninfo, @{Label='creationtime';Expression={Get-Date  $_.creationtime -Format 'yyyy-MM-ddThh:mm:sszzz' } } | convertto-json | out-file tlabFileInfo.json -encoding UTF8"`
+  qry := `Get-ItemProperty -Path '%s' | select-object name, fullname,@{Label='Size';Expression={$_.length}}, versioninfo, @{Label='CreationTime';Expression={Get-Date  $_.creationtime -Format 'yyyy-MM-ddThh:mm:sszzz' } } | convertto-json | out-file rsoFileInfo.json -encoding UTF8`
+  //qry := `Powershell.exe "Get-ItemProperty -Path '%s' | select-object name, fullname, length, versioninfo, @{Label='creationtime';Expression={Get-Date  $_.creationtime -Format 'yyyy-MM-ddThh:mm:sszzz' } } | convertto-json | out-file rsoFileInfo.json -encoding UTF8"`
   //qry := `Get-ItemProperty -Path '%s' | select-object name, fullname, length, versioninfo, @{Label='CreationTime';Expression={Get-Date  $_.creationtime -Format 'yyyy-MM-ddThh:mm:sszzz' } } | convertto-json | out-file tlabFileInfo.json -encoding UTF8"`
   qry = fmt.Sprintf(qry, path)
-  fn := `tlabFileInfo.json`
+  fn := `rsoFileInfo.json`
 
-  execcmd := "PowerShell"
+  execcmd := "Powershell.exe"  // PowerShell
   println("################# :", qry)
   cmd := exec.Command(execcmd, qry)
   _, err := cmd.CombinedOutput()
@@ -47,7 +48,7 @@ func getVersionInfo(path string, ft *esmodels.FileType) error {
   buf := utils.GetContents(fn) 
   println(string(buf))
 
-  m := new(TlabFileInfoType)
+  m := new(RSOFileInfoType)
 
   err = json.Unmarshal(buf, m)
 

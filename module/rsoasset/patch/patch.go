@@ -5,7 +5,7 @@ import (
 	"github.com/elastic/beats/libbeat/common/cfgwarn"
 	"github.com/elastic/beats/metricbeat/mb"
   
-  "bitbucket.org/truslab/pcon/servers/common/esmodels"
+  //"bitbucket.org/truslab/pcon/servers/common/esmodels"
 )
 
 // init registers the MetricSet with the central registry as soon as the program
@@ -22,7 +22,7 @@ func init() {
 // interface methods except for Fetch.
 type MetricSet struct {
 	mb.BaseMetricSet
-  *esmodels.PatchType
+  //*esmodels.PatchType
 }
 
 // New creates a new instance of the MetricSet. New is responsible for unpacking
@@ -37,7 +37,7 @@ func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 
 	return &MetricSet{
 		BaseMetricSet: base,
-    PatchType: new(esmodels.PatchType),
+    // PatchType: new(esmodels.PatchType),
 	}, nil
 }
 

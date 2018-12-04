@@ -20,16 +20,16 @@ func init() {
 // interface methods except for Fetch.
 type MetricSet struct {
 	mb.BaseMetricSet
-  Names *string
-  Version *string
-  ProductID *string
-  Vendor *string
-  Language *string
-  PackageCode *string
-  SKUNumber *string
-  Size *int64
-  IdentifyingNumber *string
-  InstallDate *string
+  // Names *string
+  // Version *string
+  // ProductID *string
+  // Vendor *string
+  // Language *string
+  // PackageCode *string
+  // SKUNumber *string
+  // Size *int64
+  // IdentifyingNumber *string
+  // InstallDate *string
 }
 
 // New creates a new instance of the MetricSet. New is responsible for unpacking
@@ -44,16 +44,16 @@ func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 
 	return &MetricSet{
 		BaseMetricSet: base,
-    Names: new(string),
-    Version: new(string),
-    ProductID: new(string),
-    Vendor: new(string),
-    Language: new(string),
-    PackageCode: new(string),
-    SKUNumber: new(string),
-    Size: new(int64),
-    IdentifyingNumber: new(string),
-    InstallDate: new(string),
+    // Names: new(string),
+    // Version: new(string),
+    // ProductID: new(string),
+    // Vendor: new(string),
+    // Language: new(string),
+    // PackageCode: new(string),
+    // SKUNumber: new(string),
+    // Size: new(int64),
+    // IdentifyingNumber: new(string),
+    // InstallDate: new(string),
 	}, nil
 }
 
