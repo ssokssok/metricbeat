@@ -5,7 +5,7 @@ import (
 	"github.com/elastic/beats/libbeat/common/cfgwarn"
   "github.com/elastic/beats/metricbeat/mb"
   
-  "bitbucket.org/truslab/pcon/servers/common/esmodels"  
+  "bitbucket.org/realsighton/rso/servers/common/esmodels"  
 )
 
 // init registers the MetricSet with the central registry as soon as the program
@@ -47,8 +47,8 @@ func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 func (m *MetricSet) Fetch(report mb.ReporterV2) {
   var err error 
 
-  // SystemType
-  m.SystemType, err = getSystem()
+  // System
+  m.System, err = getSystem()
   if err != nil {
     return
   }
@@ -97,7 +97,7 @@ func (m *MetricSet) Fetch(report mb.ReporterV2) {
 
 	report.Event(mb.Event{
 		MetricSetFields: common.MapStr{
-      "systemtype": m.SystemType,
+      "system": m.System,
       "bios": m.Bios,
       "processors": m.Processors,
       "disks": m.Disks,

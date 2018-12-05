@@ -5,7 +5,7 @@ import (
   "encoding/json"
 
   "github.com/ssokssok/metricbeat/module/rsoasset/utils"
-  "bitbucket.org/truslab/pcon/servers/common/esmodels"
+  "bitbucket.org/realsighton/rso/servers/common/esmodels"
 )
 
 func getShares() ([]*esmodels.ShareType, error) {

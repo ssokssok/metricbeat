@@ -4,8 +4,6 @@ import (
   "github.com/elastic/beats/libbeat/common"
 	"github.com/elastic/beats/libbeat/common/cfgwarn"
   "github.com/elastic/beats/metricbeat/mb"
-
-  "bitbucket.org/truslab/pcon/servers/common/esmodels"
 )
 
 // init registers the MetricSet with the central registry as soon as the program
@@ -22,14 +20,7 @@ func init() {
 // interface methods except for Fetch.
 type MetricSet struct {
 	mb.BaseMetricSet
-//  counter int
-  //Win32_DiskDrive []*esmodels.DiskType
-  Device  *esmodels.DeviceAssetType
-  Printer *esmodels.PrinterAssetType
-  Os      *esmodels.OsAssetType
-  Sw      *esmodels.SwAssetType
-  Patch   *esmodels.PatchType
-  File    *esmodels.FileType
+  counter int
 }
 
 // New creates a new instance of the MetricSet. New is responsible for unpacking
@@ -44,13 +35,7 @@ func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 
 	return &MetricSet{
 		BaseMetricSet: base,
- //   counter:       1,
-    Device:      new(esmodels.DeviceAssetType),
-    Printer:     new(esmodels.PrinterAssetType),
-    Os:          new(esmodels.OsAssetType),
-    Sw:          new(esmodels.SwAssetType),
-    Patch:       new(esmodels.PatchType),
-    File:        new(esmodels.FileType),
+    counter:       1,
 	}, nil
 }
 
@@ -58,63 +43,10 @@ func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 // format. It publishes the event which is then forwarded to the output. In case
 // of an error set the Error field of mb.Event or simply call report.Error().
 func (m *MetricSet) Fetch(report mb.ReporterV2) {
-
-  dvc := getDevice()
-
 	report.Event(mb.Event{
 		MetricSetFields: common.MapStr{
- //     "counter": m.counter,
-      "device": dvc,
+     "counter": m.counter,
 		},
   })
-//	m.counter++
-
-  osa := getOsAsset()
-
-  report.Event(mb.Event{
-    MetricSetFields: common.MapStr{
-      "os": osa,
-    },
-  })
-
-  sws := getSws()
-  if sws == nil {
-    return
-  }
-  println("#### sws count:", len(sws))
-  for _, sw := range sws {
-    report.Event(mb.Event{
-      MetricSetFields: common.MapStr{
-        "sw": sw,
-      },
-    })
-  }
-
-  prts := getPrinters()
-  if prts == nil {
-    return
-  }
-
-  println("#### prts count:", len(prts))
-  for _, prt := range prts {
-    report.Event(mb.Event{
-      MetricSetFields: common.MapStr{
-        "printer": prt,
-      },
-    })
-  }  
-
-  ptchlst := getPatchs()
-  if ptchlst == nil {
-    return
-  }
-
-  println("#### ptchlst count:", len(ptchlst))
-  for _, ptch := range ptchlst {
-    report.Event(mb.Event{
-      MetricSetFields: common.MapStr{
-        "patch": ptch,
-      },
-    })
-  }    
+  m.counter++
 }

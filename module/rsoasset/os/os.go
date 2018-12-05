@@ -5,7 +5,7 @@ import (
 	"github.com/elastic/beats/libbeat/common/cfgwarn"
   "github.com/elastic/beats/metricbeat/mb"
 
-  "bitbucket.org/truslab/pcon/servers/common/esmodels"  
+  "bitbucket.org/realsighton/rso/servers/common/esmodels"  
 )
 
 // init registers the MetricSet with the central registry as soon as the program
