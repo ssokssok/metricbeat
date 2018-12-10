@@ -6,6 +6,9 @@ import (
 	"github.com/elastic/beats/metricbeat/mb"
 )
 
+var (
+  isInit = true
+)
 // init registers the MetricSet with the central registry as soon as the program
 // starts. The New function will be called later to instantiate an instance of
 // the MetricSet for each host defined in the module's configuration. After the
@@ -20,16 +23,6 @@ func init() {
 // interface methods except for Fetch.
 type MetricSet struct {
 	mb.BaseMetricSet
-  // Names *string
-  // Version *string
-  // ProductID *string
-  // Vendor *string
-  // Language *string
-  // PackageCode *string
-  // SKUNumber *string
-  // Size *int64
-  // IdentifyingNumber *string
-  // InstallDate *string
 }
 
 // New creates a new instance of the MetricSet. New is responsible for unpacking
@@ -37,23 +30,24 @@ type MetricSet struct {
 func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 	cfgwarn.Experimental("The rsoasset sw metricset is experimental.")
 
-	config := struct{}{}
+	config := struct{
+    DataDir    string   `config:"datadir"`
+  }{
+    DataDir: "data",
+  }
 	if err := base.Module().UnpackConfig(&config); err != nil {
 		return nil, err
 	}
 
+  println("##################### DataDir", config.DataDir)
+  if isInit == true {
+    isInit = false
+    initSWData(config.DataDir)
+  }
+
+
 	return &MetricSet{
 		BaseMetricSet: base,
-    // Names: new(string),
-    // Version: new(string),
-    // ProductID: new(string),
-    // Vendor: new(string),
-    // Language: new(string),
-    // PackageCode: new(string),
-    // SKUNumber: new(string),
-    // Size: new(int64),
-    // IdentifyingNumber: new(string),
-    // InstallDate: new(string),
 	}, nil
 }
 
@@ -64,15 +58,6 @@ func (m *MetricSet) Fetch(report mb.ReporterV2) {
   list, err := getSwAssets()
   if err != nil {
     return
-  }
-
-  ulist, uerr := getSwUninstallAssets()
-  if uerr != nil {
-    return
-  }
-
-  for _, itm := range ulist {
-    list = append(list, itm)
   }
 
   for _, itm := range list {
@@ -91,4 +76,6 @@ func (m *MetricSet) Fetch(report mb.ReporterV2) {
       },
     })
   }
+
+  println("#################### last sw count:", len(list))
 }

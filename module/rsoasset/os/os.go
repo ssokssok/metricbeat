@@ -1,16 +1,23 @@
 package os
 
 import (
+  "fmt"
+  "os"
   "sort"
+  "path/filepath"
+  "encoding/json"
 
 	"github.com/elastic/beats/libbeat/common"
 	"github.com/elastic/beats/libbeat/common/cfgwarn"
   "github.com/elastic/beats/metricbeat/mb"
 
+  "github.com/ssokssok/metricbeat/module/rsoasset/utils"
   "bitbucket.org/realsighton/rso/servers/common/esmodels"  
 )
 
 var (
+  isInit = true
+  datadir string  
   old  *esmodels.OsAssetType
   cur  *esmodels.OsAssetType
 )
@@ -37,13 +44,20 @@ type MetricSet struct {
 func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 	cfgwarn.Experimental("The rsoasset os metricset is experimental.")
 
-	config := struct{}{}
+	config := struct{
+    DataDir    string   `config:"datadir"`
+  }{
+    DataDir: "data",
+  }
 	if err := base.Module().UnpackConfig(&config); err != nil {
 		return nil, err
 	}
 
-  old = new(esmodels.OsAssetType)
-  cur = new(esmodels.OsAssetType)
+  println("##################### DataDir", config.DataDir)
+  if isInit == true {
+    isInit = false
+    initOsData(config.DataDir)
+  }
 
 	return &MetricSet{
 		BaseMetricSet: base,
@@ -87,10 +101,13 @@ func (m *MetricSet) Fetch(report mb.ReporterV2) {
   
   if isEq {
     println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& no changed")
+    writeOsData()
     return 
   }
 
   old = cur
+
+  writeOsData()
 
 	report.Event(mb.Event{
 		MetricSetFields: common.MapStr{
@@ -171,4 +188,47 @@ func checkEqualOS() bool {
   }
 
   return true
+}
+
+
+func initOsData(p string) {
+
+  old = new(esmodels.OsAssetType)
+  cur = new(esmodels.OsAssetType)
+
+  pwd, err := os.Getwd()
+  if err != nil {
+    println(err)
+    return
+  }
+
+  datadir = fmt.Sprintf("%s%c%s%c%s", pwd, filepath.Separator, p, filepath.Separator, "os.json")
+  println("datadir :", datadir)
+
+  buf := utils.GetJSONContents(datadir)
+
+  if len(buf) <= 0 {
+    return
+  }
+ 
+  err = json.Unmarshal(buf, old)
+  println("$$$$$$$$$$ initialize old share data:", len(old.Shares))
+  return
+}
+
+func writeOsData() {
+  f, err := os.Create(datadir)
+  if err != nil {
+    println("os create error:", err)
+    return 
+  }
+
+  defer f.Close()
+
+  bctn, _ := json.Marshal(old)
+
+  f.WriteString(string(bctn))
+  f.Sync()
+  println("****************** os data write")
+  return
 }

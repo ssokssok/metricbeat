@@ -71,7 +71,7 @@ func getEsModelShareType() ([]*esmodels.ShareType, error) {
   }
 
   buf := utils.GetContents(fn) 
-  println(string(buf))
+  //println(string(buf))
   ma := make([]*esmodels.ShareType, 0)
 
   if buf[0] == '[' {

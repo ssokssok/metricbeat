@@ -7,7 +7,7 @@ import (
 )
 
 
-
+// GetContents is ...
 func GetContents(fn string) []byte {
   path := fmt.Sprintf("%s", fn)
 
@@ -21,3 +21,35 @@ func GetContents(fn string) []byte {
   
   return buf[3:]  // remove BOM
 }
+
+// GetJSONContents is ....
+func GetJSONContents(fn string) []byte {
+  path := fmt.Sprintf("%s", fn)
+
+  // file, err := os.Open(path)
+  // if err != nil {
+  //   println("path:", path, "err:", err.Error())
+  //   return nil
+  // }
+
+  // //file.Close()
+
+  // buf, err := ioutil.ReadAll(file)
+  // if err != nil {
+  //   println("path:", path, "err:", err.Error())
+  //   file.Close()
+  //   return nil
+  // }
+
+  // file.Close()
+  buf, err := ioutil.ReadFile(path)
+  if err != nil {
+    println("path :", path, "err:", err.Error())
+    return nil
+  }
+ 
+  os.Remove(path)
+  
+  return buf
+}
+

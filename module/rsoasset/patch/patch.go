@@ -8,6 +8,10 @@ import (
   //"bitbucket.org/truslab/pcon/servers/common/esmodels"
 )
 
+var (
+  isInit = true
+)
+
 // init registers the MetricSet with the central registry as soon as the program
 // starts. The New function will be called later to instantiate an instance of
 // the MetricSet for each host defined in the module's configuration. After the
@@ -30,12 +34,20 @@ type MetricSet struct {
 func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 	cfgwarn.Experimental("The rsoasset patch metricset is experimental.")
 
-	config := struct{}{}
+	config := struct{
+    DataDir    string   `config:"datadir"`
+  }{
+    DataDir: "data",
+  }
 	if err := base.Module().UnpackConfig(&config); err != nil {
 		return nil, err
 	}
 
-  statusInit()
+  println("##################### DataDir", config.DataDir)
+  if isInit == true {
+    isInit = false
+    initPatchData(config.DataDir)
+  }
 
 	return &MetricSet{
 		BaseMetricSet: base,

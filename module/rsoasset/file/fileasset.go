@@ -1,13 +1,61 @@
 package file
 
 import (
+  "fmt"
   "strings"
+  "os"
+  "path/filepath"
+  "encoding/json"
+
+  "github.com/ssokssok/metricbeat/module/rsoasset/utils"
   "bitbucket.org/realsighton/rso/servers/common/esmodels"
 )
 
 var (
+  datadir string
   old []*esmodels.FileType 
 )
+
+func initFileData(p string) {
+ 
+  pwd, err := os.Getwd()
+  if err != nil {
+    println(err)
+    return
+  }
+
+  datadir = fmt.Sprintf("%s%c%s%c%s", pwd, filepath.Separator, p, filepath.Separator, "file.json")
+  println("datadir :", datadir)
+
+  buf := utils.GetJSONContents(datadir)
+
+  if len(buf) <= 0 {
+    return
+  }
+
+  old = make([]*esmodels.FileType, 0)
+  
+  err = json.Unmarshal(buf, &old)
+  println("$$$$$$$$$$ initialize old length:", len(old))
+  return
+}
+
+func writeFileData() {
+  f, err := os.Create(datadir)
+  if err != nil {
+    println("file create error:", err)
+    return 
+  }
+
+  defer f.Close()
+
+  bctn, _ := json.Marshal(old)
+
+  f.WriteString(string(bctn))
+  f.Sync()
+  println("****************** filedata write")
+  return
+}
 
 func getFileAssets() ([]*esmodels.FileType, error) {
   cur, err := getEsModelFileType()
@@ -31,6 +79,8 @@ func getFileAssets() ([]*esmodels.FileType, error) {
   }
   //old = ma 
 
+  writeFileData()
+
   return ma, nil
 }
 
@@ -47,11 +97,14 @@ func findExistList(v *esmodels.FileType) bool {
   }
 
   for _, ov := range old {
-    if v.Name == ov.Name && v.FileVersion == ov.FileVersion {
-      return true
+    if v.Name != nil && ov.Name != nil {
+      if v.FileVersion != nil && ov.FileVersion != nil {
+        if *v.Name == *ov.Name && *v.FileVersion == *ov.FileVersion {
+          return true
+        }    
+      }
     }
   }
-
   return false
 }
 

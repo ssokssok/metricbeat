@@ -63,7 +63,7 @@ func getEsModelTimezoneType() (*esmodels.TimeZoneType, error) {
   }
 
   buf := utils.GetContents(fn) 
-  println(string(buf))
+  //println(string(buf))
   err = json.Unmarshal(buf, m)
   if err != nil {
     return nil, err

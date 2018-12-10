@@ -6,6 +6,9 @@ import (
 	"github.com/elastic/beats/metricbeat/mb"
 )
 
+var (
+  isInit = true
+)
 // init registers the MetricSet with the central registry as soon as the program
 // starts. The New function will be called later to instantiate an instance of
 // the MetricSet for each host defined in the module's configuration. After the
@@ -20,12 +23,6 @@ func init() {
 // interface methods except for Fetch.
 type MetricSet struct {
 	mb.BaseMetricSet
-  // Names *string
-  // DriverName *string
-  // PrinterStatus *int32
-  // Default    *bool 
-  // Direct     *bool
-  // PrintProcessor *string
 }
 
 // New creates a new instance of the MetricSet. New is responsible for unpacking
@@ -33,10 +30,20 @@ type MetricSet struct {
 func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 	cfgwarn.Experimental("The rsoasset printer metricset is experimental.")
 
-	config := struct{}{}
+	config := struct{
+    DataDir    string   `config:"datadir"`
+  }{
+    DataDir: "data",
+  }
 	if err := base.Module().UnpackConfig(&config); err != nil {
 		return nil, err
 	}
+
+  println("##################### DataDir", config.DataDir)
+  if isInit == true {
+    isInit = false
+    initPrinterData(config.DataDir)
+  }
 
 	return &MetricSet{
 		BaseMetricSet: base,

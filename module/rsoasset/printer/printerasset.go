@@ -1,7 +1,10 @@
 package printer
 
 import (
+  "fmt"
+  "os"
   "os/exec"
+  "path/filepath"
   "encoding/json"
 
   "github.com/ssokssok/metricbeat/module/rsoasset/utils"
@@ -9,8 +12,52 @@ import (
 )
 
 var (
+  datadir string
   old []*esmodels.PrinterAssetType
 )
+
+
+func initPrinterData(p string) {
+ 
+  pwd, err := os.Getwd()
+  if err != nil {
+    println(err)
+    return
+  }
+
+  datadir = fmt.Sprintf("%s%c%s%c%s", pwd, filepath.Separator, p, filepath.Separator, "printer.json")
+  println("datadir :", datadir)
+
+  buf := utils.GetJSONContents(datadir)
+
+  if len(buf) <= 0 {
+    return
+  }
+
+  old = make([]*esmodels.PrinterAssetType, 0)
+  
+  err = json.Unmarshal(buf, &old)
+  println("$$$$$$$$$$ initialize old length:", len(old))
+  return
+}
+
+func writePrinterData() {
+  f, err := os.Create(datadir)
+  if err != nil {
+    println("file create error:", err)
+    return 
+  }
+
+  defer f.Close()
+
+  bctn, _ := json.Marshal(old)
+
+  f.WriteString(string(bctn))
+  f.Sync()
+  println("****************** printerdata write")
+  return
+}
+
 
 func getPrinterAssets() ([]*esmodels.PrinterAssetType, error) {
   m, err := getEsModelPrinterAssetType()
@@ -18,6 +65,8 @@ func getPrinterAssets() ([]*esmodels.PrinterAssetType, error) {
     println(err)
     return nil, err
   }
+
+  writePrinterData()
 
   return m, nil
 }
@@ -75,7 +124,7 @@ func getEsModelPrinterAssetType() ([]*esmodels.PrinterAssetType, error) {
   }
 
   buf := utils.GetContents(fn) 
-  println(string(buf))
+  //println(string(buf))
   cur := make([]*esmodels.PrinterAssetType, 0)
 
   if buf[0] == '[' {

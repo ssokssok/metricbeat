@@ -46,7 +46,7 @@ func getVersionInfo(path string, ft *esmodels.FileType) error {
   }
 
   buf := utils.GetContents(fn) 
-  println(string(buf))
+  //println(string(buf))
 
   m := new(RSOFileInfoType)
 

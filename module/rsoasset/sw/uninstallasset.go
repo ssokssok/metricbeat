@@ -8,11 +8,6 @@ import (
   "bitbucket.org/realsighton/rso/servers/common/esmodels"
 )
 
-var (
-  oldun []*esmodels.SwAssetType 
-)
-
-
 // UninstallSw is ...
 type UninstallSw struct {
   DisplayName *string `json:"DisplayName,omitempty"`
@@ -48,39 +43,15 @@ func getSwUninstallAssets() ([]*esmodels.SwAssetType, error) {
   ma := make([]*esmodels.SwAssetType, 0)
 
   for _, v := range cur {
-    f := findExistListUninstall(v)
+    f := findExistList(v)
     if !f {
       ma = append(ma, v)
     }
   }
 
-  for _, m := range ma {
-    oldun = append(oldun, m)
-  }
-
   return ma, nil
 }
 
-
-func findExistListUninstall(v *esmodels.SwAssetType) bool {
-  
-  if oldun == nil {
-    oldun = make([]*esmodels.SwAssetType, 0)
-    return false
-  }
-
-  if len(oldun) == 0 {
-    return false
-  }
-
-  for _, ov := range oldun {
-    if ov.Equals(v) {
-      return true
-    }
-  }
-
-  return false
-}
 
 func getEsModelSwUninstallHKCU(ma *[]*esmodels.SwAssetType) error {
 
@@ -96,7 +67,7 @@ func getEsModelSwUninstallHKCU(ma *[]*esmodels.SwAssetType) error {
   }
 
   buf := utils.GetContents(fn) 
-  println(string(buf))
+  //println(string(buf))
 
   uma := make([]*UninstallSw, 0)
   um := new(UninstallSw)
@@ -144,7 +115,7 @@ func getEsModelSwUninstallHKLM1(ma *[]*esmodels.SwAssetType) error {
   }
 
   buf := utils.GetContents(fn) 
-  println(string(buf))
+  //println(string(buf))
 
   uma := make([]*UninstallSw, 0)
   um := new(UninstallSw)
@@ -191,7 +162,7 @@ func getEsModelSwUninstallHKLM2(ma *[]*esmodels.SwAssetType) error {
   }
 
   buf := utils.GetContents(fn) 
-  println(string(buf))
+  //println(string(buf))
 
   uma := make([]*UninstallSw, 0)
   um := new(UninstallSw)

@@ -1,7 +1,10 @@
 package sw
 
 import (
+  "fmt"
+  "os"
   "os/exec"
+  "path/filepath"
   "encoding/json"
 
   "github.com/ssokssok/metricbeat/module/rsoasset/utils"
@@ -9,8 +12,52 @@ import (
 )
 
 var (
+  datadir string
   old []*esmodels.SwAssetType 
 )
+
+
+func initSWData(p string) {
+ 
+  pwd, err := os.Getwd()
+  if err != nil {
+    println(err)
+    return
+  }
+
+  datadir = fmt.Sprintf("%s%c%s%c%s", pwd, filepath.Separator, p, filepath.Separator, "sw.json")
+  println("datadir :", datadir)
+
+  buf := utils.GetJSONContents(datadir)
+
+  if len(buf) <= 0 {
+    return
+  }
+
+  old = make([]*esmodels.SwAssetType, 0)
+  
+  err = json.Unmarshal(buf, &old)
+  println("$$$$$$$$$$ initialize old length:", len(old))
+  return
+}
+
+func writeSWData() {
+  f, err := os.Create(datadir)
+  if err != nil {
+    println("sw create error:", err)
+    return 
+  }
+
+  defer f.Close()
+
+  bctn, _ := json.Marshal(old)
+
+  f.WriteString(string(bctn))
+  f.Sync()
+  println("****************** sw data write")
+  return
+}
+
 
 func getSwAssets() ([]*esmodels.SwAssetType, error) {
   m, err := getEsModelSwAssetType()
@@ -28,10 +75,18 @@ func getSwAssets() ([]*esmodels.SwAssetType, error) {
     for _, itm := range um {
       m = append(m, itm)
     }
-
+    
+    for _, mi := range m {
+      old = append(old, mi)
+    }
+    writeSWData()
     return m, nil
   }
 
+  for _, mi := range um {
+    old = append(old, mi)
+  }
+  writeSWData()
   return um, nil
 }
 
@@ -88,7 +143,7 @@ func getEsModelSwAssetType() ([]*esmodels.SwAssetType, error) {
   }
 
   buf := utils.GetContents(fn) 
-  println(string(buf))
+  //println(string(buf))
   cur := make([]*esmodels.SwAssetType, 0)
 
   if buf[0] == '[' {
@@ -112,9 +167,6 @@ func getEsModelSwAssetType() ([]*esmodels.SwAssetType, error) {
      }
   }
 
-  for _, mi := range ma {
-    old = append(old, mi)
-  }
 
   return ma, nil  
 }

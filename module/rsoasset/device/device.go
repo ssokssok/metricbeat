@@ -1,16 +1,23 @@
 package device
 
 import (
+  "fmt"
+  "os"
   "sort"
+  "path/filepath"
+  "encoding/json"
 
 	"github.com/elastic/beats/libbeat/common"
 	"github.com/elastic/beats/libbeat/common/cfgwarn"
   "github.com/elastic/beats/metricbeat/mb"
   
+  "github.com/ssokssok/metricbeat/module/rsoasset/utils"
   "bitbucket.org/realsighton/rso/servers/common/esmodels"  
 )
 
 var (
+  isInit = true
+  datadir string
   old  *esmodels.DeviceAssetType
   cur  *esmodels.DeviceAssetType
 )
@@ -37,13 +44,20 @@ type MetricSet struct {
 func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 	cfgwarn.Experimental("The rsoasset device metricset is experimental.")
 
-	config := struct{}{}
+	config := struct{
+    DataDir    string   `config:"datadir"`
+  }{
+    DataDir: "data",
+  }
 	if err := base.Module().UnpackConfig(&config); err != nil {
 		return nil, err
+	}
+
+  println("##################### DataDir", config.DataDir)
+  if isInit == true {
+    isInit = false
+    initDeviceData(config.DataDir)
   }
-  
-  old = new(esmodels.DeviceAssetType)
-  cur = new(esmodels.DeviceAssetType)
 
 	return &MetricSet{
 		BaseMetricSet: base,
@@ -118,10 +132,13 @@ func (m *MetricSet) Fetch(report mb.ReporterV2) {
   
   if isEq {
     println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& no changed")
+    writeDeviceData()
     return 
   }
 
   old = cur
+  
+  writeDeviceData()
 
 	report.Event(mb.Event{
 		MetricSetFields: common.MapStr{
@@ -287,4 +304,48 @@ func checkEqualDevice() bool {
   
 
   return true
+}
+
+
+
+func initDeviceData(p string) {
+
+  old = new(esmodels.DeviceAssetType)
+  cur = new(esmodels.DeviceAssetType)
+
+  pwd, err := os.Getwd()
+  if err != nil {
+    println(err)
+    return
+  }
+
+  datadir = fmt.Sprintf("%s%c%s%c%s", pwd, filepath.Separator, p, filepath.Separator, "device.json")
+  println("datadir :", datadir)
+
+  buf := utils.GetJSONContents(datadir)
+
+  if len(buf) <= 0 {
+    return
+  }
+ 
+  err = json.Unmarshal(buf, old)
+  println("$$$$$$$$$$ initialize old nic data:", len(old.Nics))
+  return
+}
+
+func writeDeviceData() {
+  f, err := os.Create(datadir)
+  if err != nil {
+    println("device create error:", err)
+    return 
+  }
+
+  defer f.Close()
+
+  bctn, _ := json.Marshal(old)
+
+  f.WriteString(string(bctn))
+  f.Sync()
+  println("****************** device data write")
+  return
 }

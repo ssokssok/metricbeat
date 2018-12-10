@@ -6,6 +6,9 @@ import (
 	"github.com/elastic/beats/metricbeat/mb"
 )
 
+var (
+  isInit = true
+)
 // init registers the MetricSet with the central registry as soon as the program
 // starts. The New function will be called later to instantiate an instance of
 // the MetricSet for each host defined in the module's configuration. After the
@@ -20,15 +23,6 @@ func init() {
 // interface methods except for Fetch.
 type MetricSet struct {
 	mb.BaseMetricSet
-  // Names *string   
-  // Size *int64   
-  // FileDescription *string   
-  // OriginalFilename *string  
-  // FileVersion *string   
-  // ProductName *string   
-  // ProductVersion *string 
-  // CompanyName *string
-  // LegalCopyright *string
 }
 
 // New creates a new instance of the MetricSet. New is responsible for unpacking
@@ -41,10 +35,12 @@ func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
     MaxConn    int      `config:"maxconn" validate:"min=1"`
     RsoSvr     string   `config:"rsosvr"`
     Hosts      []string `config:"hosts"`
+    DataDir    string   `config:"datadir"`
   }{
     MaxConn: 10,
     RsoSvr: "",
     Hosts: make([]string, 0),
+    DataDir: "data",
   }
 	if err := base.Module().UnpackConfig(&config); err != nil {
 		return nil, err
@@ -56,17 +52,14 @@ func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
     println("      - host:", v)
   }
 
+  println("##################### DataDir", config.DataDir)
+  if isInit == true {
+    isInit = false
+    initFileData(config.DataDir)
+  }
+
 	return &MetricSet{
 		BaseMetricSet: base,
-    // Names: new(string),
-    // Size: new(int64),
-    // FileDescription: new(string),
-    // OriginalFilename: new(string),
-    // FileVersion: new(string),
-    // ProductName: new(string),
-    // ProductVersion: new(string),
-    // CompanyName: new(string),
-    // LegalCopyright: new(string),
 	}, nil
 }
 
@@ -96,5 +89,7 @@ func (m *MetricSet) Fetch(report mb.ReporterV2) {
       },
     })
   }
+
+  println("###################### filecount:",len(list))
 
 }

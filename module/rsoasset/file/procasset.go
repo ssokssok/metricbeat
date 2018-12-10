@@ -32,7 +32,7 @@ func getEsModelProcessType() ([]*ProcessType, error) {
   }
 
   buf := utils.GetContents(fn) 
-  println(string(buf))
+  //println(string(buf))
   ma := make([]*ProcessType, 0)
 
   if buf[0] == '[' {

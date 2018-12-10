@@ -1,7 +1,10 @@
 package patch
 
 import (
+  "fmt"
+  "os"
   "os/exec"
+  "path/filepath"
   "encoding/json"
 
   "github.com/ssokssok/metricbeat/module/rsoasset/utils"
@@ -9,13 +12,50 @@ import (
 )
 
 var (
+  datadir string
   old []*esmodels.PatchType
 )
 
-func statusInit() {
+func initPatchData(p string) {
+ 
+  pwd, err := os.Getwd()
+  if err != nil {
+    println(err)
+    return
+  }
+
+  datadir = fmt.Sprintf("%s%c%s%c%s", pwd, filepath.Separator, p, filepath.Separator, "patch.json")
+  println("datadir :", datadir)
+
+  buf := utils.GetJSONContents(datadir)
+
+  if len(buf) <= 0 {
+    return
+  }
+
   old = make([]*esmodels.PatchType, 0)
+  
+  err = json.Unmarshal(buf, &old)
+  println("$$$$$$$$$$ initialize old length:", len(old))
+  return
 }
 
+func writePatchData() {
+  f, err := os.Create(datadir)
+  if err != nil {
+    println("file create error:", err)
+    return 
+  }
+
+  defer f.Close()
+
+  bctn, _ := json.Marshal(old)
+
+  f.WriteString(string(bctn))
+  f.Sync()
+  println("****************** patchdata write")
+  return
+}
 
 func getPatchAssets() ([]*esmodels.PatchType, error) {
   m, err := getEsModelPatchAssetType()
@@ -24,6 +64,7 @@ func getPatchAssets() ([]*esmodels.PatchType, error) {
     return nil, err
   }
 
+  writePatchData()
   return m, nil
 }
 
