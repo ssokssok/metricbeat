@@ -8,6 +8,10 @@ import (
   "bitbucket.org/realsighton/rso/servers/common/esmodels"
 )
 
+var (
+  old []*esmodels.SwAssetType 
+)
+
 func getSwAssets() ([]*esmodels.SwAssetType, error) {
   m, err := getEsModelSwAssetType()
   if err != nil {
@@ -15,7 +19,20 @@ func getSwAssets() ([]*esmodels.SwAssetType, error) {
     return nil, err
   }
 
-  return m, nil
+  um, uerr := getSwUninstallAssets()
+  if uerr != nil {
+    return nil, uerr
+  }
+
+  if m != nil {
+    for _, itm := range um {
+      m = append(m, itm)
+    }
+
+    return m, nil
+  }
+
+  return um, nil
 }
 
 func getSwAssetType() (string, error) {
@@ -72,13 +89,13 @@ func getEsModelSwAssetType() ([]*esmodels.SwAssetType, error) {
 
   buf := utils.GetContents(fn) 
   println(string(buf))
-  ma := make([]*esmodels.SwAssetType, 0)
+  cur := make([]*esmodels.SwAssetType, 0)
 
   if buf[0] == '[' {
-    err = json.Unmarshal(buf, &ma)
+    err = json.Unmarshal(buf, &cur)
   } else {
     err = json.Unmarshal(buf, m)
-    ma = append(ma, m)
+    cur = append(cur, m)
   }
 
   if err != nil {
@@ -86,5 +103,38 @@ func getEsModelSwAssetType() ([]*esmodels.SwAssetType, error) {
     return nil, err
   }
 
+  ma := make([]*esmodels.SwAssetType, 0)
+
+  for _, v := range cur {
+     f := findExistList(v)
+     if !f {
+       ma = append(ma, v)
+     }
+  }
+
+  for _, mi := range ma {
+    old = append(old, mi)
+  }
+
   return ma, nil  
+}
+
+func findExistList(v *esmodels.SwAssetType) bool {
+  
+  if old == nil {
+    old = make([]*esmodels.SwAssetType, 0)
+    return false
+  }
+
+  if len(old) == 0 {
+    return false
+  }
+
+  for _, ov := range old {
+    if ov.Equals(v) {
+      return true
+    }
+  }
+
+  return false
 }

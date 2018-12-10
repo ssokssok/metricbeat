@@ -8,6 +8,15 @@ import (
   "bitbucket.org/realsighton/rso/servers/common/esmodels"
 )
 
+var (
+  old []*esmodels.PatchType
+)
+
+func statusInit() {
+  old = make([]*esmodels.PatchType, 0)
+}
+
+
 func getPatchAssets() ([]*esmodels.PatchType, error) {
   m, err := getEsModelPatchAssetType()
   if err != nil {
@@ -72,13 +81,13 @@ func getEsModelPatchAssetType() ([]*esmodels.PatchType, error) {
 
   buf := utils.GetContents(fn) 
   println(string(buf))
-  ma := make([]*esmodels.PatchType, 0)
+  cur := make([]*esmodels.PatchType, 0)
 
   if buf[0] == '[' {
-    err = json.Unmarshal(buf, &ma)
+    err = json.Unmarshal(buf, &cur)
   } else {
     err = json.Unmarshal(buf, m)
-    ma = append(ma, m)
+    cur = append(cur, m)
   }
 
   if err != nil {
@@ -86,5 +95,33 @@ func getEsModelPatchAssetType() ([]*esmodels.PatchType, error) {
     return nil, err
   }
 
+  ma := make([]*esmodels.PatchType, 0)
+
+  for _, v := range cur {
+     f := findExistList(v)
+     if !f {
+       ma = append(ma, v)
+     }
+  }
+
+  for _, mi := range ma {
+    old = append(old, mi)
+  }
+  
   return ma, nil  
+}
+
+
+func findExistList(v *esmodels.PatchType) bool {
+  if len(old) == 0 {
+    return false
+  }
+
+  for _, ov := range old {
+    if ov.Equals(v) {
+      return true
+    }
+  }
+
+  return false
 }

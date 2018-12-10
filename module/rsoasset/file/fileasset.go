@@ -5,15 +5,54 @@ import (
   "bitbucket.org/realsighton/rso/servers/common/esmodels"
 )
 
+var (
+  old []*esmodels.FileType 
+)
 
 func getFileAssets() ([]*esmodels.FileType, error) {
-  m, err := getEsModelFileType()
+  cur, err := getEsModelFileType()
   if err != nil {
     println(err)
     return nil, err
   }
 
-  return m, nil
+  ma := make([]*esmodels.FileType, 0) 
+
+
+  for _, v := range cur {
+    f := findExistList(v)
+    if !f {
+      ma = append(ma, v)
+    }
+  }
+
+  for _, m := range ma {
+    old = append(old, m)
+  }
+  //old = ma 
+
+  return ma, nil
+}
+
+
+func findExistList(v *esmodels.FileType) bool {
+  
+  if old == nil {
+    old = make([]*esmodels.FileType, 0)
+    return false
+  }
+
+  if len(old) == 0 {
+    return false
+  }
+
+  for _, ov := range old {
+    if v.Name == ov.Name && v.FileVersion == ov.FileVersion {
+      return true
+    }
+  }
+
+  return false
 }
 
 

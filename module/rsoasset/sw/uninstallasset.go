@@ -8,6 +8,11 @@ import (
   "bitbucket.org/realsighton/rso/servers/common/esmodels"
 )
 
+var (
+  oldun []*esmodels.SwAssetType 
+)
+
+
 // UninstallSw is ...
 type UninstallSw struct {
   DisplayName *string `json:"DisplayName,omitempty"`
@@ -19,30 +24,63 @@ type UninstallSw struct {
 }
 
 func getSwUninstallAssets() ([]*esmodels.SwAssetType, error) {
-  m := make([]*esmodels.SwAssetType, 0)
+  cur := make([]*esmodels.SwAssetType, 0)
 
   var err error
-  err = getEsModelSwUninstallHKCU(&m)
+  err = getEsModelSwUninstallHKCU(&cur)
   if err != nil {
     println(err)
     return nil, err
   }
 
-  err = getEsModelSwUninstallHKLM1(&m)
+  err = getEsModelSwUninstallHKLM1(&cur)
   if err != nil {
     println(err)
     return nil, err
   }
   
-  err = getEsModelSwUninstallHKLM2(&m)
+  err = getEsModelSwUninstallHKLM2(&cur)
   if err != nil {
     println(err)
     return nil, err
   }
 
-  return m, nil
+  ma := make([]*esmodels.SwAssetType, 0)
+
+  for _, v := range cur {
+    f := findExistListUninstall(v)
+    if !f {
+      ma = append(ma, v)
+    }
+  }
+
+  for _, m := range ma {
+    oldun = append(oldun, m)
+  }
+
+  return ma, nil
 }
 
+
+func findExistListUninstall(v *esmodels.SwAssetType) bool {
+  
+  if oldun == nil {
+    oldun = make([]*esmodels.SwAssetType, 0)
+    return false
+  }
+
+  if len(oldun) == 0 {
+    return false
+  }
+
+  for _, ov := range oldun {
+    if ov.Equals(v) {
+      return true
+    }
+  }
+
+  return false
+}
 
 func getEsModelSwUninstallHKCU(ma *[]*esmodels.SwAssetType) error {
 

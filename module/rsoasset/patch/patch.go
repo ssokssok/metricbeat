@@ -35,6 +35,8 @@ func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 		return nil, err
 	}
 
+  statusInit()
+
 	return &MetricSet{
 		BaseMetricSet: base,
     // PatchType: new(esmodels.PatchType),
@@ -50,6 +52,12 @@ func (m *MetricSet) Fetch(report mb.ReporterV2) {
   if err != nil {
     return
   }
+
+  if len(list) == 0 {
+    println("$$$$$$$$$$$$$$$$$$$$$$$$$$$ no change")
+    return
+  }
+
   for _, itm := range list {
     report.Event(mb.Event{
       MetricSetFields: common.MapStr{

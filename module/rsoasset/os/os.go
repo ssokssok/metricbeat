@@ -1,11 +1,18 @@
 package os
 
 import (
+  "sort"
+
 	"github.com/elastic/beats/libbeat/common"
 	"github.com/elastic/beats/libbeat/common/cfgwarn"
   "github.com/elastic/beats/metricbeat/mb"
 
   "bitbucket.org/realsighton/rso/servers/common/esmodels"  
+)
+
+var (
+  old  *esmodels.OsAssetType
+  cur  *esmodels.OsAssetType
 )
 
 // init registers the MetricSet with the central registry as soon as the program
@@ -34,6 +41,9 @@ func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 	if err := base.Module().UnpackConfig(&config); err != nil {
 		return nil, err
 	}
+
+  old = new(esmodels.OsAssetType)
+  cur = new(esmodels.OsAssetType)
 
 	return &MetricSet{
 		BaseMetricSet: base,
@@ -68,6 +78,20 @@ func (m *MetricSet) Fetch(report mb.ReporterV2) {
     return
   }
   
+  cur.Os = m.Os
+  cur.Timezone = m.Timezone 
+  cur.Shares = m.Shares 
+  cur.UserAccounts = m.UserAccounts 
+
+  isEq := checkEqualOS()
+  
+  if isEq {
+    println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& no changed")
+    return 
+  }
+
+  old = cur
+
 	report.Event(mb.Event{
 		MetricSetFields: common.MapStr{
       "os": m.Os,
@@ -76,4 +100,75 @@ func (m *MetricSet) Fetch(report mb.ReporterV2) {
       "useraccounts": m.UserAccounts,
 		},
 	})
+}
+
+
+func checkEqualOS() bool {
+  var isEq bool
+
+  if old.Os == nil {
+    println("hear 1")
+    return false
+  }
+
+  isEq = cur.Os.Equals(old.Os)
+  if !isEq {
+    println("hear 2")
+    return false
+  }
+
+  if old.Timezone == nil {
+    println("hear 3")
+    return false
+  }
+
+  isEq = cur.Timezone.Equals(old.Timezone)
+  if !isEq {
+    println("hear 4")
+    return false
+  }
+
+  if cur.Shares != nil && old.Shares == nil {
+    println("here 5")
+    return false
+  }
+
+  if len(cur.Shares) != len(old.Shares) {
+    println("here 6")
+    return false
+  }
+
+  sort.Slice(cur.Shares, func(i, j int) bool {return *cur.Shares[i].Name < *cur.Shares[j].Name })
+  sort.Slice(old.Shares, func(i, j int) bool {return *old.Shares[i].Name < *old.Shares[j].Name })
+
+  for i:=0; i<len(cur.Shares); i++ {
+    iseq := cur.Shares[i].Equals(old.Shares[i])
+    if !iseq {
+      println("here 7")
+      return false
+    }
+  }
+
+  if cur.UserAccounts != nil && old.UserAccounts == nil {
+    println("here 8")
+    return false
+  }
+
+  if len(cur.UserAccounts) != len(old.UserAccounts) {
+    println("here 9")
+    return false
+  }
+
+  sort.Slice(cur.UserAccounts, func(i, j int) bool {return *cur.UserAccounts[i].Name < *cur.UserAccounts[j].Name })
+  sort.Slice(old.UserAccounts, func(i, j int) bool {return *old.UserAccounts[i].Name < *old.UserAccounts[j].Name })
+
+  for i:=0; i<len(cur.UserAccounts); i++ {
+    iseq := cur.UserAccounts[i].Equals(old.UserAccounts[i])
+    if !iseq {
+      println("here 10")
+      return false
+    }
+  }
+
+  return true
 }
