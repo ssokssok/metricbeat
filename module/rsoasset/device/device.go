@@ -119,6 +119,11 @@ func (m *MetricSet) Fetch(report mb.ReporterV2) {
     return
   }
 
+  m.Memories, err = getMemories()
+  if err != nil {
+    return
+  }
+
   cur.System     = m.System 
   cur.Bios       = m.Bios
   cur.Processors = m.Processors
@@ -126,7 +131,8 @@ func (m *MetricSet) Fetch(report mb.ReporterV2) {
   cur.Drives     = m.Drives
   cur.Nics       = m.Nics 
   cur.NicConfigs = m.NicConfigs 
-  cur.Videos     = m.Videos 
+  cur.Videos     = m.Videos
+  cur.Memories   = m.Memories 
 
   isEq := checkEqualDevice()
   
@@ -150,6 +156,7 @@ func (m *MetricSet) Fetch(report mb.ReporterV2) {
       "nics": m.Nics,
       "nicconfigs": m.NicConfigs,
       "videos": m.Videos,
+      "memories": m.Memories,
 		},
   })
 }
@@ -302,6 +309,27 @@ func checkEqualDevice() bool {
     }
   }
   
+
+  if old.Memories == nil {
+    println("here 14")
+    return false
+  }
+
+  if len(cur.Memories) != len(old.Memories) {
+    println("here 15")
+    return false
+  }
+
+  sort.Slice(cur.Memories, func(i, j int) bool {return *cur.Memories[i].BankLabel < *cur.Memories[j].BankLabel })
+  sort.Slice(old.Memories, func(i, j int) bool {return *old.Memories[i].BankLabel < *old.Memories[j].BankLabel })
+
+  for i:=0; i<len(cur.Memories); i++ {
+    iseq := cur.Memories[i].Equals(old.Memories[i])
+    if !iseq {
+      println("here 16")
+      return false
+    }
+  }
 
   return true
 }
