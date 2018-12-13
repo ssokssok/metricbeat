@@ -86,6 +86,7 @@ func (m *MetricSet) Fetch(report mb.ReporterV2) {
         "product_version": itm.ProductVersion,
         "company_name": itm.CompanyName,
         "legal_copyright": itm.LegalCopyright,
+        "issigned": itm.IsSigned,
       },
     })
   }

@@ -18,6 +18,13 @@ type VersionInfo struct {
   ProductVersion *string `json:"ProductVersion,omitempty"`
   LegalCopyright *string `json:"LegalCopyright,omitempty"`
   FileVersion *string `json:"FileVersion,omitempty"`
+  IsSigned *bool `json:"issigned,omitempty"`
+}
+
+// SignedInfo is ...
+type SignedInfo struct {
+  Status *int `json:"Status,omitempty"`
+  //IsSigned *bool 
 }
 
 // RSOFileInfoType is ...
@@ -66,6 +73,49 @@ func getVersionInfo(path string, ft *esmodels.FileType) error {
   ft.ProductVersion = m.Version.ProductVersion
   ft.CompanyName = m.Version.CompanyName
   ft.LegalCopyright = m.Version.LegalCopyright
+
+  err = getAutenticodeSignature(path, ft)
+  if err != nil {
+    return err
+  }
+
   return nil  
 }
 
+
+func getAutenticodeSignature(path string, ft *esmodels.FileType) error {
+
+  qry := `Get-AuthenticodeSignature -FilePath "%s" | select-object Status | convertto-json | out-file SignatureInfo.json -encoding UTF8`
+  qry = fmt.Sprintf(qry, path)
+  fn := `SignatureInfo.json`
+
+  execcmd := "Powershell.exe"  // PowerShell
+  println("################# :", qry)
+  cmd := exec.Command(execcmd, qry)
+  _, err := cmd.CombinedOutput()
+  if err != nil {
+    return err
+  }
+
+  buf := utils.GetContents(fn) 
+  //println(string(buf))
+
+  m := new(SignedInfo)
+
+  err = json.Unmarshal(buf, m)
+
+  if err != nil {
+    println("@@@@@@@@@@@@@@@@ error :", err.Error())
+    return err
+  }
+
+  isSigned := false
+
+  if *m.Status == 0 {
+    isSigned = true
+  }
+
+  ft.IsSigned = &isSigned
+
+  return nil  
+}
