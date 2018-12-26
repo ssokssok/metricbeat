@@ -8,7 +8,9 @@ import (
   "encoding/json"
 
 	"github.com/elastic/beats/libbeat/common"
-	"github.com/elastic/beats/libbeat/common/cfgwarn"
+  "github.com/elastic/beats/libbeat/common/cfgwarn"
+  "github.com/elastic/beats/libbeat/logp"
+  "github.com/elastic/beats/libbeat/paths"  
   "github.com/elastic/beats/metricbeat/mb"
 
   "github.com/ssokssok/metricbeat/module/rsoasset/utils"
@@ -53,10 +55,10 @@ func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 		return nil, err
 	}
 
-  println("##################### DataDir", config.DataDir)
+  logp.Info("##################### DataDir: %s, path: %s", paths.Paths.Data, config.DataDir)
   if isInit == true {
     isInit = false
-    initOsData(config.DataDir)
+    initOsData(paths.Paths.Data, config.DataDir)
   }
 
 	return &MetricSet{
@@ -191,19 +193,20 @@ func checkEqualOS() bool {
 }
 
 
-func initOsData(p string) {
+func initOsData(pwd, p string) {
 
   old = new(esmodels.OsAssetType)
   cur = new(esmodels.OsAssetType)
 
-  pwd, err := os.Getwd()
-  if err != nil {
-    println(err)
-    return
-  }
+  // pwd, err := os.Getwd()
+  // if err != nil {
+  //   println(err)
+  //   return
+  // }
 
-  datadir = fmt.Sprintf("%s%c%s%c%s", pwd, filepath.Separator, p, filepath.Separator, "os.json")
-  println("datadir :", datadir)
+  // datadir = fmt.Sprintf("%s%c%s%c%s", pwd, filepath.Separator, p, filepath.Separator, "os.json")
+  datadir = fmt.Sprintf("%s%c%s", pwd, filepath.Separator, "os.json")
+  logp.Info("datadir : %s", datadir)
 
   buf := utils.GetJSONContents(datadir)
 
@@ -211,8 +214,12 @@ func initOsData(p string) {
     return
   }
  
-  err = json.Unmarshal(buf, old)
-  println("$$$$$$$$$$ initialize old share data:", len(old.Shares))
+  err := json.Unmarshal(buf, old)
+  if err != nil {
+    logp.Warn("initialize get info err: %v", err)
+    return
+  }
+  logp.Info("$$$$$$$$$$ initialize old share data: %d", len(old.Shares))
   return
 }
 

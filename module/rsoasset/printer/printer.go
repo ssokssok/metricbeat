@@ -2,7 +2,9 @@ package printer
 
 import (
 	"github.com/elastic/beats/libbeat/common"
-	"github.com/elastic/beats/libbeat/common/cfgwarn"
+  "github.com/elastic/beats/libbeat/common/cfgwarn"
+  "github.com/elastic/beats/libbeat/logp"
+  "github.com/elastic/beats/libbeat/paths"  
 	"github.com/elastic/beats/metricbeat/mb"
 )
 
@@ -39,10 +41,10 @@ func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 		return nil, err
 	}
 
-  println("##################### DataDir", config.DataDir)
+  logp.Info("##################### DataDir: %s, path: %s",paths.Paths.Data, config.DataDir)
   if isInit == true {
     isInit = false
-    initPrinterData(config.DataDir)
+    initPrinterData(paths.Paths.Data, config.DataDir)
   }
 
 	return &MetricSet{
@@ -70,7 +72,7 @@ func (m *MetricSet) Fetch(report mb.ReporterV2) {
       MetricSetFields: common.MapStr{
         "name": itm.Name,
         "drivername": itm.DriverName,
-        "printerstatus": itm.Default,
+        "printerstatus": itm.PrinterStatus,
         "default": itm.Default,
         "direct": itm.Direct,
         "printprocessor": itm.PrintProcessor,

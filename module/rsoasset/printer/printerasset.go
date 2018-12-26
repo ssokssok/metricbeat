@@ -7,6 +7,8 @@ import (
   "path/filepath"
   "encoding/json"
 
+  "github.com/elastic/beats/libbeat/logp"
+
   "github.com/ssokssok/metricbeat/module/rsoasset/utils"
   "bitbucket.org/realsighton/rso/servers/common/esmodels"
 )
@@ -17,16 +19,17 @@ var (
 )
 
 
-func initPrinterData(p string) {
+func initPrinterData(pwd, p string) {
  
-  pwd, err := os.Getwd()
-  if err != nil {
-    println(err)
-    return
-  }
+  // pwd, err := os.Getwd()
+  // if err != nil {
+  //   println(err)
+  //   return
+  // }
 
-  datadir = fmt.Sprintf("%s%c%s%c%s", pwd, filepath.Separator, p, filepath.Separator, "printer.json")
-  println("datadir :", datadir)
+  // datadir = fmt.Sprintf("%s%c%s%c%s", pwd, filepath.Separator, p, filepath.Separator, "printer.json")
+  datadir = fmt.Sprintf("%s%c%s", pwd, filepath.Separator, "printer.json")
+  logp.Info("datadir : %s", datadir)
 
   buf := utils.GetJSONContents(datadir)
 
@@ -36,15 +39,19 @@ func initPrinterData(p string) {
 
   old = make([]*esmodels.PrinterAssetType, 0)
   
-  err = json.Unmarshal(buf, &old)
-  println("$$$$$$$$$$ initialize old length:", len(old))
+  err := json.Unmarshal(buf, &old)
+  if err != nil {
+    logp.Warn("initialize info get err: %v", err)
+    return
+  }
+  logp.Info("initialize old length: %d", len(old))
   return
 }
 
 func writePrinterData() {
   f, err := os.Create(datadir)
   if err != nil {
-    println("file create error:", err)
+    logp.Warn("file create error: %v", err)
     return 
   }
 
@@ -54,7 +61,7 @@ func writePrinterData() {
 
   f.WriteString(string(bctn))
   f.Sync()
-  println("****************** printerdata write")
+  // println("****************** printerdata write")
   return
 }
 

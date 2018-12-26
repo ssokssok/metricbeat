@@ -7,6 +7,8 @@ import (
   "path/filepath"
   "encoding/json"
 
+  "github.com/elastic/beats/libbeat/logp"
+
   "github.com/ssokssok/metricbeat/module/rsoasset/utils"
   "bitbucket.org/realsighton/rso/servers/common/esmodels"
 )
@@ -17,16 +19,17 @@ var (
 )
 
 
-func initSWData(p string) {
+func initSWData(pwd, p string) {
  
-  pwd, err := os.Getwd()
-  if err != nil {
-    println(err)
-    return
-  }
+  // pwd, err := os.Getwd()
+  // if err != nil {
+  //   println(err)
+  //   return
+  // }
 
-  datadir = fmt.Sprintf("%s%c%s%c%s", pwd, filepath.Separator, p, filepath.Separator, "sw.json")
-  println("datadir :", datadir)
+  // datadir = fmt.Sprintf("%s%c%s%c%s", pwd, filepath.Separator, p, filepath.Separator, "sw.json")
+  datadir = fmt.Sprintf("%s%c%s", pwd, filepath.Separator, "sw.json")
+  logp.Info("datadir : %s", datadir)
 
   buf := utils.GetJSONContents(datadir)
 
@@ -36,8 +39,12 @@ func initSWData(p string) {
 
   old = make([]*esmodels.SwAssetType, 0)
   
-  err = json.Unmarshal(buf, &old)
-  println("$$$$$$$$$$ initialize old length:", len(old))
+  err := json.Unmarshal(buf, &old)
+  if err != nil {
+    logp.Warn("initialize get info err: %v", err)
+    return 
+  }
+  logp.Info("$$$$$$$$$$ initialize old length: %d", len(old))
   return
 }
 

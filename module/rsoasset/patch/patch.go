@@ -2,7 +2,9 @@ package patch
 
 import (
 	"github.com/elastic/beats/libbeat/common"
-	"github.com/elastic/beats/libbeat/common/cfgwarn"
+  "github.com/elastic/beats/libbeat/common/cfgwarn"
+  "github.com/elastic/beats/libbeat/logp"
+  "github.com/elastic/beats/libbeat/paths"  
 	"github.com/elastic/beats/metricbeat/mb"
   
   //"bitbucket.org/truslab/pcon/servers/common/esmodels"
@@ -43,10 +45,10 @@ func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 		return nil, err
 	}
 
-  println("##################### DataDir", config.DataDir)
+  logp.Info("##################### DataDir: %s, path: %s", paths.Paths.Data, config.DataDir)
   if isInit == true {
     isInit = false
-    initPatchData(config.DataDir)
+    initPatchData(paths.Paths.Data, config.DataDir)
   }
 
 	return &MetricSet{

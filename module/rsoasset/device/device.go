@@ -8,12 +8,19 @@ import (
   "encoding/json"
 
 	"github.com/elastic/beats/libbeat/common"
-	"github.com/elastic/beats/libbeat/common/cfgwarn"
+  "github.com/elastic/beats/libbeat/common/cfgwarn"
+  "github.com/elastic/beats/libbeat/logp"
+  "github.com/elastic/beats/libbeat/paths"
   "github.com/elastic/beats/metricbeat/mb"
   
   "github.com/ssokssok/metricbeat/module/rsoasset/utils"
   "bitbucket.org/realsighton/rso/servers/common/esmodels"  
 )
+
+// const (
+// 	// ModuleName is the name of this module
+//   ModuleName = "device"
+// )
 
 var (
   isInit = true
@@ -37,6 +44,7 @@ func init() {
 type MetricSet struct {
 	mb.BaseMetricSet
   *esmodels.DeviceAssetType
+  // Log          *logp.Logger
 }
 
 // New creates a new instance of the MetricSet. New is responsible for unpacking
@@ -53,15 +61,18 @@ func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 		return nil, err
 	}
 
-  println("##################### DataDir", config.DataDir)
+  // logp.Warn("@@@@@@@@@@@@@@@@@@ beat paths %s", paths.Paths.String()) Home, Config, Data, Logs
+  // logp.Warn("@@@@@@@@@ beat paths: data %s, log %s", paths.Paths.Data, paths.Paths.Logs)
+  // logp.Warn("##################### DataDir %s", config.DataDir)
   if isInit == true {
     isInit = false
-    initDeviceData(config.DataDir)
+    initDeviceData(paths.Paths.Data, config.DataDir)
   }
 
 	return &MetricSet{
 		BaseMetricSet: base,
     DeviceAssetType: new(esmodels.DeviceAssetType),
+    // Log: logp.NewLogger(ModuleName),
 	}, nil
 }
 
@@ -154,7 +165,7 @@ func (m *MetricSet) Fetch(report mb.ReporterV2) {
       "disks": m.Disks,
       "drives": m.Drives,
       "nics": m.Nics,
-      "nicconfigs": m.NicConfigs,
+      //"nicconfigs": m.NicConfigs,
       "videos": m.Videos,
       "memories": m.Memories,
 		},
@@ -336,19 +347,20 @@ func checkEqualDevice() bool {
 
 
 
-func initDeviceData(p string) {
+func initDeviceData(pwd, p string) {
 
   old = new(esmodels.DeviceAssetType)
   cur = new(esmodels.DeviceAssetType)
 
-  pwd, err := os.Getwd()
-  if err != nil {
-    println(err)
-    return
-  }
+  // pwd, err := os.Getwd()
+  // if err != nil {
+  //   logp.Warn("%v", err)
+  //   return
+  // }
 
-  datadir = fmt.Sprintf("%s%c%s%c%s", pwd, filepath.Separator, p, filepath.Separator, "device.json")
-  println("datadir :", datadir)
+  //datadir = fmt.Sprintf("%s%c%s%c%s", pwd, filepath.Separator, p, filepath.Separator, "device.json")
+  datadir = fmt.Sprintf("%s%c%s", pwd, filepath.Separator, "device.json")
+  logp.Info("datadir : %s", datadir)
 
   buf := utils.GetJSONContents(datadir)
 
@@ -356,15 +368,19 @@ func initDeviceData(p string) {
     return
   }
  
-  err = json.Unmarshal(buf, old)
-  println("$$$$$$$$$$ initialize old nic data:", len(old.Nics))
+  err := json.Unmarshal(buf, old)
+  if err != nil {
+    logp.Warn("initialize data get err : %v", err)
+    return
+  }
+  logp.Info("initialize old nic data: %d", len(old.Nics))
   return
 }
 
 func writeDeviceData() {
   f, err := os.Create(datadir)
   if err != nil {
-    println("device create error:", err)
+    logp.Warn("device create error: %v", err)
     return 
   }
 
@@ -374,6 +390,6 @@ func writeDeviceData() {
 
   f.WriteString(string(bctn))
   f.Sync()
-  println("****************** device data write")
+  //logp.Info("device data write")
   return
 }
